@@ -4,6 +4,9 @@ require("express-async-errors");
 const express = require("express");
 const app = express();
 
+// Routes
+const authRouter = require("./routes/auth");
+
 // other packages
 const morgan = require("morgan");
 
@@ -20,6 +23,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("ecommerce-api");
 });
+
+app.use("/api/v1/auth", authRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
