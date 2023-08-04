@@ -19,8 +19,9 @@ const getSingleUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user });
 };
 
+// Show current user that is logged in
 const showCurrentUser = async (req, res) => {
-  res.send("all users");
+  res.status(StatusCodes.OK).json({ user: req.user });
 };
 
 const updateUser = async (req, res) => {
