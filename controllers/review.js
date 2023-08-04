@@ -33,20 +33,74 @@ const createReview = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ review });
 };
 
+// Get all product reviews
 const getAllReviews = async (req, res) => {
-  res.send("created");
+  const reviews = await Review.find({}).populate({
+    path: "product",
+    select: "name company price",
+  });
+
+  res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 };
 
+// Get single product review
 const getSingleReview = async (req, res) => {
-  res.send("created");
+  const { id: reviewId } = req.params;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review) {
+    throw new CustomError.NotFoundError(`No review with id: ${reviewId}`);
+  }
+
+  res.status(StatusCodes.OK).json({ review });
 };
 
+// Updates data of review
 const updateReview = async (req, res) => {
-  res.send("created");
+  const { id: reviewId } = req.params;
+  const { rating, title, comment } = req.body;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review) {
+    throw new CustomError.NotFoundError(`No review with id: ${reviewId}`);
+  }
+
+  checkPermissions(req.user, review.user);
+
+  review.rating = rating;
+  review.title = title;
+  review.comment = comment;
+
+  await review.save();
+
+  res.status(StatusCodes.OK).json({ review });
 };
 
+// Deletes all data of one review
 const deleteReview = async (req, res) => {
-  res.send("created");
+  const { id: reviewId } = req.params;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review) {
+    throw new CustomError.NotFoundError(`No review with id: ${reviewId}`);
+  }
+
+  checkPermissions(req.user, review.user);
+
+  await review.remove();
+
+  res.status(StatusCodes.OK).send();
+};
+
+// Get all reviews of a single product
+const getSingleProductReviews = async (req, res) => {
+  const { id: productId } = req.params;
+  const reviews = await Review.find({ product: productId });
+
+  res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 };
 
 module.exports = {
@@ -55,4 +109,5 @@ module.exports = {
   getSingleReview,
   updateReview,
   deleteReview,
+  getSingleProductReviews,
 };

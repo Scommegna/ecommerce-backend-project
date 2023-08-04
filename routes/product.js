@@ -15,6 +15,8 @@ const {
   uploadImage,
 } = require("../controllers/product");
 
+const { getSingleProductReviews } = require("../controllers/review");
+
 // All product routes
 router
   .route("/")
@@ -30,5 +32,7 @@ router
 router
   .route("/uploadImage")
   .post([authenticateUser, authorizePermissions("admin")], uploadImage);
+
+router.route("/:id/reviews").get(getSingleProductReviews);
 
 module.exports = router;
