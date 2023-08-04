@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const { createTokenUser, attachCookiesToResponse } = require("../utils");
 
 // Get all users
 const getAllUsers = async (req, res) => {
@@ -24,8 +25,24 @@ const showCurrentUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 
+// Updates user data
 const updateUser = async (req, res) => {
-  res.send("all users");
+  const { name, email } = req.body;
+
+  if (!email || !name) {
+    throw new CustomError.BadRequestError("Please, provide all values.");
+  }
+
+  const user = await User.findOne({ _id: req.user.userId });
+
+  user.email = email;
+  user.name = name;
+
+  await user.save();
+
+  const tokenUser = createTokenUser(user);
+  attachCookiesToResponse({ res, user: tokenUser });
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 // Update user password
@@ -59,3 +76,21 @@ module.exports = {
   updateUser,
   updateUserPassword,
 };
+
+// const updateUser = async (req, res) => {
+//   const { name, email } = req.body;
+
+//   if (!email || !name) {
+//     throw new CustomError.BadRequestError("Please, provide all values.");
+//   }
+
+//   const user = await User.findByIdAndUpdate(
+//     { _id: req.user.userId },
+//     { email, name },
+//     { new: true, runValidators: true }
+//   );
+
+//   const tokenUser = createTokenUser(user);
+//   attachCookiesToResponse({ res, user: tokenUser });
+//   res.status(StatusCodes.OK).json({ user: tokenUser });
+// };
