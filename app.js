@@ -8,6 +8,7 @@ const app = express();
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const productRouter = require("./routes/product");
+const reviewRouter = require("./routes/review");
 
 // other packages
 const morgan = require("morgan");
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
