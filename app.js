@@ -6,6 +6,7 @@ const app = express();
 
 // Routes
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
 
 // other packages
 const morgan = require("morgan");
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users", userRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
