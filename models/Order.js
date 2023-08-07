@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Schema for single item on cart
-const SingleCartItemSchema = mongoose.Schema({
+const SingleOrderItemSchema = mongoose.Schema({
   name: { type: String, required: true },
   image: { type: String, required: true },
   price: { type: Number, required: true },
@@ -32,7 +32,7 @@ const OrderSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
-    cartItems: [SingleCartItemSchema],
+    orderItems: [SingleOrderItemSchema],
     status: {
       type: String,
       enum: ["pending", "failed", "paid", "delivered", "canceled"],
